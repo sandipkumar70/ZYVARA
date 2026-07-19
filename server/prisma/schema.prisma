@@ -1,0 +1,119 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ChatHistory {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  category   String
+  message    String
+  aiResponse String
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model TrustedContact {
+  id     Int     @id @default(autoincrement())
+  userId Int
+  name   String
+  email  String?
+  phone  String?
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model EmergencyRequest {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  category  String
+  symptom   String?
+  severity  String?
+  createdAt DateTime @default(now())
+}
+
+model Location {
+  id      Int     @id @default(autoincrement())
+  name    String
+  type    String
+  city    String
+  lat     Float
+  lng     Float
+  open24h Boolean @default(false)
+  contact String?
+}
+
+model QuickSOSLog {
+  id            Int      @id @default(autoincrement())
+  userId        Int
+  phoneNumber   String
+  method        String
+  location      String?
+  emergencyType String?
+  createdAt     DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+
+
+model MoodEntry {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  mood      String
+  note      String?
+  date      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, date])
+}
+
+
+
+
+model PeriodEntry {
+  id            Int       @id @default(autoincrement())
+  userId        Int
+  startDate     DateTime
+  endDate       DateTime?
+  flowIntensity String?
+  symptoms      String[]  @default([])
+  notes         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+
+
+model User {
+  id             Int       @id @default(autoincrement())
+  name           String
+  email          String    @unique
+  password       String
+  role           String    @default("user")
+  city           String?
+  gender         String?   @default("female")
+  createdAt      DateTime  @default(now())
+  resetOtp       String?
+  resetOtpExpiry DateTime?
+
+  chats        ChatHistory[]
+  contacts     TrustedContact[]
+  quickSOSLogs QuickSOSLog[]
+
+  moodEntries MoodEntry[]
+  periodEntries PeriodEntry[]
+}
