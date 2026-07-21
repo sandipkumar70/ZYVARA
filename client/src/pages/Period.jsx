@@ -1,6 +1,7 @@
+
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../api/axios'
 
 const FLOW_OPTIONS = ['Light', 'Medium', 'Heavy']
 const SYMPTOM_OPTIONS = ['Cramps', 'Headache', 'Mood Swings', 'Back Pain', 'Fatigue', 'Bloating']
@@ -46,7 +47,7 @@ function Period() {
 
   const fetchHistory = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/period/${userId}/history`)
+      const res = await api.get(`/api/period/${userId}/history`)
       setHistory(res.data)
     } catch (err) {
       console.error('Error fetching period history:', err)
@@ -55,7 +56,7 @@ function Period() {
 
   const fetchPrediction = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/period/${userId}/prediction`)
+      const res = await api.get(`/api/period/${userId}/prediction`)
       setPrediction(res.data)
     } catch (err) {
       console.error('Error fetching prediction:', err)
@@ -86,7 +87,7 @@ function Period() {
     setLoading(true)
     setMessage('')
     try {
-      await axios.post('http://localhost:5000/api/period', {
+      await api.post('/api/period', {
         userId,
         startDate,
         endDate: endDate || null,

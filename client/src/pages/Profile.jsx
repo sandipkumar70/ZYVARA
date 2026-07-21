@@ -1,214 +1,7 @@
-// import { useState, useEffect } from 'react'
-// import { useNavigate } from 'react-router-dom'
-// import axios from 'axios'
 
-// function Profile() {
-//   const navigate = useNavigate()
-//   const [profile, setProfile] = useState(null)
-//   const [name, setName] = useState('')
-//   const [city, setCity] = useState('')
-//   const [gender, setGender] = useState('female')
-//   const [message, setMessage] = useState('')
-//   const [loading, setLoading] = useState(false)
-//   const [editing, setEditing] = useState(false)
-
-//   const userId = localStorage.getItem('userId') || 1
-
-//   useEffect(() => {
-//     fetchProfile()
-//   }, [])
-
-//   const fetchProfile = async () => {
-//     try {
-//       const res = await axios.get(`http://localhost:5000/api/user/${userId}`)
-//       setProfile(res.data)
-//       setName(res.data.name)
-//       setCity(res.data.city || '')
-//       setGender(res.data.gender || 'female')
-//     } catch (err) {
-//       console.error('Error fetching profile:', err)
-//     }
-//   }
-
-//   const saveProfile = async () => {
-//     setLoading(true)
-//     setMessage('')
-//     try {
-//       const res = await axios.put(`http://localhost:5000/api/user/${userId}`, {
-//         name, city, gender
-//       })
-//       setProfile(res.data.user)
-//       localStorage.setItem('gender', res.data.user.gender)
-//       setMessage('Profile updated successfully!')
-//       setEditing(false)
-//     } catch (err) {
-//       setMessage('Failed to update profile.')
-//     }
-//     setLoading(false)
-//   }
-
-//   const handleLogout = () => {
-//     localStorage.clear()
-//     navigate('/')
-//   }
-
-//   if (!profile) {
-//     return (
-//       <div className="min-h-screen bg-[#f7f7f8] flex items-center justify-center">
-//         <p className="text-gray-400 text-sm">Loading profile...</p>
-//       </div>
-//     )
-//   }
-
-//   return (
-//     <div className="min-h-screen bg-[#f7f7f8] flex flex-col">
-
-//       <div className="max-w-4xl mx-auto w-full px-4 pt-6">
-//         <div className="bg-white border border-gray-200 rounded-3xl shadow-sm px-6 py-4 flex items-center justify-between">
-//           <div>
-//             <h2 className="text-xl md:text-2xl font-semibold text-gray-900">👤 My Profile</h2>
-//             <p className="text-sm text-gray-500">Manage your account details</p>
-//           </div>
-//           <button
-//             onClick={() => navigate(-1)}
-//             className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl text-sm font-medium text-gray-700 transition"
-//           >
-//             ← Back
-//           </button>
-//         </div>
-//       </div>
-
-//       <div className="max-w-4xl mx-auto w-full px-4 py-4">
-//         <div className="bg-white border border-gray-200 rounded-3xl shadow-sm p-6 md:p-8 space-y-5">
-
-//           <div className="flex items-center gap-4 pb-4 border-b border-gray-100">
-//             <div className="w-16 h-16 bg-gray-900 rounded-2xl flex items-center justify-center text-white text-2xl font-bold">
-//               {profile.name.charAt(0).toUpperCase()}
-//             </div>
-//             <div>
-//               <p className="font-semibold text-gray-900">{profile.name}</p>
-//               <p className="text-xs text-gray-400">{profile.email}</p>
-//             </div>
-//           </div>
-
-//           {message && (
-//             <div className={`px-4 py-3 rounded-2xl text-sm font-medium ${
-//               message.includes('success')
-//                 ? 'bg-green-50 text-green-700 border border-green-200'
-//                 : 'bg-red-50 text-red-600 border border-red-200'
-//             }`}>
-//               {message}
-//             </div>
-//           )}
-
-//           {!editing ? (
-//             <>
-//               <div className="space-y-3">
-//                 <div className="flex justify-between px-4 py-3 bg-gray-50 rounded-2xl">
-//                   <span className="text-xs text-gray-500 uppercase tracking-wider">City</span>
-//                   <span className="text-sm font-medium text-gray-800">{profile.city || 'Not set'}</span>
-//                 </div>
-//                 <div className="flex justify-between px-4 py-3 bg-gray-50 rounded-2xl">
-//                   <span className="text-xs text-gray-500 uppercase tracking-wider">Gender</span>
-//                   <span className="text-sm font-medium text-gray-800 capitalize">{profile.gender}</span>
-//                 </div>
-//               </div>
-
-//               <button
-//                 onClick={() => setEditing(true)}
-//                 className="w-full bg-black hover:bg-gray-800 text-white font-medium py-3.5 rounded-2xl text-sm transition"
-//               >
-//                 Edit Profile
-//               </button>
-//             </>
-//           ) : (
-//             <>
-//               <div className="space-y-4">
-//                 <input
-//                   type="text"
-//                   placeholder="Full Name"
-//                   value={name}
-//                   onChange={(e) => setName(e.target.value)}
-//                   className="w-full px-4 py-3 rounded-2xl border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:border-gray-400 transition"
-//                 />
-//                 <input
-//                   type="text"
-//                   placeholder="City"
-//                   value={city}
-//                   onChange={(e) => setCity(e.target.value)}
-//                   className="w-full px-4 py-3 rounded-2xl border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:border-gray-400 transition"
-//                 />
-//                 <div className="flex gap-3">
-//                   <button
-//                     type="button"
-//                     onClick={() => setGender('female')}
-//                     className={`flex-1 py-3 rounded-2xl text-sm font-semibold transition-all ${
-//                       gender === 'female' ? 'bg-black text-white' : 'bg-gray-50 border border-gray-200 text-gray-500'
-//                     }`}
-//                   >
-//                     👩 Female
-//                   </button>
-//                   <button
-//                     type="button"
-//                     onClick={() => setGender('male')}
-//                     className={`flex-1 py-3 rounded-2xl text-sm font-semibold transition-all ${
-//                       gender === 'male' ? 'bg-black text-white' : 'bg-gray-50 border border-gray-200 text-gray-500'
-//                     }`}
-//                   >
-//                     👨 Male
-//                   </button>
-//                 </div>
-//               </div>
-
-//               <div className="flex gap-3">
-//                 <button
-//                   onClick={saveProfile}
-//                   disabled={loading}
-//                   className="flex-1 bg-black hover:bg-gray-800 text-white font-medium py-3 rounded-2xl text-sm transition disabled:opacity-50"
-//                 >
-//                   {loading ? 'Saving...' : 'Save Changes'}
-//                 </button>
-//                 <button
-//                   onClick={() => { setEditing(false); setMessage('') }}
-//                   className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 rounded-2xl text-sm transition"
-//                 >
-//                   Cancel
-//                 </button>
-//               </div>
-//             </>
-//           )}
-
-//           <button
-//             onClick={handleLogout}
-//             className="w-full bg-red-50 hover:bg-red-100 text-red-600 font-medium py-3 rounded-2xl text-sm transition"
-//           >
-//             Logout
-//           </button>
-
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }
-
-// export default Profile
-
-
-
-
-
-
-
-
-
-
-
-
-
-//NEW POLISHED VERSION-----------------------
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../api/axios'
 
 function Profile() {
   const navigate = useNavigate()
@@ -237,7 +30,7 @@ function Profile() {
 
   const fetchProfile = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/user/${userId}`)
+      const res = await api.get(`/api/user/${userId}`)
       setProfile(res.data)
       setName(res.data.name)
       setCity(res.data.city || '')
@@ -251,7 +44,7 @@ function Profile() {
     setLoading(true)
     setMessage('')
     try {
-      const res = await axios.put(`http://localhost:5000/api/user/${userId}`, {
+      const res = await api.put(`/api/user/${userId}`, {
         name, city, gender
       })
       setProfile(res.data.user)
@@ -284,7 +77,7 @@ function Profile() {
     setPwLoading(true)
     setPwMessage('')
     try {
-      const res = await axios.put(`http://localhost:5000/api/user/${userId}/password`, {
+      const res = await api.put(`/api/user/${userId}/password`, {
         currentPassword, newPassword
       })
       setPwMessage(res.data.message)

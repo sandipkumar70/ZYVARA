@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../api/axios'
 
 function SOS() {
   const navigate = useNavigate()
@@ -27,7 +27,7 @@ const isValidPhone = (number) => {
 
   const fetchContacts = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/contact/${userId}`)
+      const res = await api.get(`/api/contact/${userId}`)
       setSavedContacts(res.data.filter(c => c.phone))
     } catch (err) {
       console.error('Error fetching contacts:', err)
@@ -63,7 +63,7 @@ const isValidPhone = (number) => {
     setMessage('')
 
     try {
-      const res = await axios.post('http://localhost:5000/api/sos', {
+      const res = await api.post('/api/sos', {
         userId,
         location,
         emergencyType
@@ -78,7 +78,7 @@ const isValidPhone = (number) => {
 
   const logQuickSOS = async (phoneNumber, method) => {
     try {
-      await axios.post('http://localhost:5000/api/quicksos', {
+      await api.post('/api/quicksos', {
         userId,
         phoneNumber,
         method,

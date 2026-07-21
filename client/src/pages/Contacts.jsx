@@ -1,6 +1,7 @@
+
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../api/axios'
 
 function Contacts() {
   const navigate = useNavigate()
@@ -20,7 +21,7 @@ function Contacts() {
 
   const fetchContacts = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/contact/${userId}`)
+      const res = await api.get(`/api/contact/${userId}`)
       setContacts(res.data)
     } catch (err) {
       console.error('Error fetching contacts:', err)
@@ -37,7 +38,7 @@ function Contacts() {
     setLoading(true)
     setMessage('')
     try {
-      await axios.post('http://localhost:5000/api/contact', {
+      await api.post('/api/contact', {
         userId,
         name,
         email,
@@ -58,7 +59,7 @@ function Contacts() {
   const deleteContact = async (id) => {
     if (!window.confirm('Delete this contact?')) return
     try {
-      await axios.delete(`http://localhost:5000/api/contact/${id}`)
+      await api.delete(`/api/contact/${id}`)
       setContacts(prev => prev.filter(c => c.id !== id))
       setMessage('Contact deleted.')
     } catch (err) {
